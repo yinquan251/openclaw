@@ -1,4 +1,4 @@
-import { createHmac, createHash } from "node:crypto";
+import { createHash, createHmac } from "node:crypto";
 import type { ReasoningLevel, ThinkLevel } from "../auto-reply/thinking.js";
 import { SILENT_REPLY_TOKEN } from "../auto-reply/tokens.js";
 import type { MemoryCitationsMode } from "../config/types.memory.js";
@@ -24,11 +24,12 @@ function buildSkillsSection(params: { skillsPrompt?: string; readToolName: strin
   }
   return [
     "## Skills (mandatory)",
+    "You are an intelligent agent that invokes tools; you need to invoke the read tools given below.",
     "Before replying: scan <available_skills> <description> entries.",
-    `- If exactly one skill clearly applies: read its SKILL.md at <location> with \`${params.readToolName}\`, then follow it.`,
+    `- If exactly one skill clearly applies: use \`${params.readToolName}\` to read the file at the EXACT path in <location> (do NOT modify or guess the path), then follow the instructions.`,
     "- If multiple could apply: choose the most specific one, then read/follow it.",
     "- If none clearly apply: do not read any SKILL.md.",
-    "Constraints: never read more than one skill up front; only read after selecting.",
+    "Constraints: never read more than one skill up front; only read after selecting. You must only read SKILL.md.",
     trimmed,
     "",
   ];
