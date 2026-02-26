@@ -1,0 +1,53 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Gateway (built bundle)",
+      "type": "node",
+      "request": "launch",
+      "preLaunchTask": "Stop Gateway",
+      "program": "${workspaceFolder}/openclaw.mjs",
+      "args": ["gateway", "--port", "18789"],
+      "cwd": "${workspaceFolder}",
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"],
+      "env": {
+        "NODE_ENV": "development",
+        "OPENCLAW_STATE_DIR": "${env:HOME}/.openclaw"
+      },
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      "autoAttachChildProcesses": true
+    },
+    {
+      "name": "Debug Gateway (launch) directly tsx",
+      "type": "node",
+      "request": "launch",
+      "preLaunchTask": "Stop Gateway",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/tsx",
+      "args": ["src/index.ts", "gateway", "--port", "18789"],
+      "cwd": "${workspaceFolder}",
+      "sourceMaps": true,
+      "env": {
+        "NODE_ENV": "development",
+        "OPENCLAW_STATE_DIR": "${env:HOME}/.openclaw"
+      },
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "Debug Gateway (attach)",
+      "type": "node",
+      "request": "attach",
+      "port": 9229,
+      "sourceMaps": true,
+      "restart": true,
+      "skipFiles": ["<node_internals>/**"],
+      "resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"],
+      "sourceMapPathOverrides": {
+        "../src/**": "${workspaceFolder}/src/**"
+      }
+    }
+  ]
+}

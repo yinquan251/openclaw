@@ -1,0 +1,13 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Stop Gateway",
+      "type": "shell",
+      "command": "openclaw gateway stop || true",
+      "presentation": {
+        "reveal": "silent"
+      }
+    }
+  ]
+}

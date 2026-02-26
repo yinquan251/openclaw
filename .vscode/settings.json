@@ -18,5 +18,21 @@
   "typescript.reportStyleChecksAsWarnings": false,
   "typescript.updateImportsOnFileMove.enabled": "always",
   "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.experimental.useTsgo": true
+  "typescript.experimental.useTsgo": true,
+  // Show git blame inline
+  "editor.inlineSuggest.enabled": true,
+
+  // Exclude dist/ from file watcher (better performance)
+  "files.watcherExclude": {
+    "**/dist/**": true,
+    "**/node_modules/**": true
+  },
+
+  // Organize imports on save
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+
+  // Enable breadcrumbs for file navigation
+  "breadcrumbs.enabled": true
 }
