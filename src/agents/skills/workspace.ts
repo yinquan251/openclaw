@@ -43,13 +43,36 @@ const skillCommandDebugOnce = new Set<string>();
  * Saves ~5–6 tokens per skill path × N skills ≈ 400–600 tokens total.
  */
 function compactSkillPaths(skills: Skill[]): Skill[] {
+  const isWindows = path.sep === "\\";
   const home = os.homedir();
   if (!home) return skills;
   const prefix = home.endsWith(path.sep) ? home : home + path.sep;
-  return skills.map((s) => ({
-    ...s,
-    filePath: s.filePath.startsWith(prefix) ? "~/" + s.filePath.slice(prefix.length) : s.filePath,
-  }));
+  skillsLogger.debug("compactSkillPaths", {
+    home,
+    pathSep: path.sep,
+    prefix,
+    platform: process.platform,
+  });
+  return skills.map((s) => {
+    const original = s.filePath;
+    let filePath = original;
+    // On POSIX, compact home prefix to ~/ to save tokens.
+    // On Windows, skip ~ compaction because the read tool's expandPath
+    // does not reliably resolve ~ on Windows (os.homedir() may return
+    // the SYSTEM profile when running as a service). Instead, keep the
+    // full path and just normalize backslashes to forward slashes so
+    // the AI model sees clean paths it can work with.
+    if (!isWindows && original.startsWith(prefix)) {
+      filePath = "~/" + original.slice(prefix.length);
+    }
+    if (isWindows) {
+      filePath = filePath.replaceAll("\\", "/");
+    }
+    if (filePath !== original) {
+      skillsLogger.debug(`compactSkillPath: "${original}" → "${filePath}"`);
+    }
+    return { ...s, filePath };
+  });
 }
 
 function debugSkillCommandOnce(

@@ -9,6 +9,7 @@ import {
   readFileWithinRoot,
   writeFileWithinRoot,
 } from "../infra/fs-safe.js";
+import { logDebug } from "../logger.ts";
 import { detectMime } from "../media/mime.js";
 import { sniffMimeFromBase64 } from "../media/sniff-mime-from-base64.js";
 import type { ImageSanitizationLimits } from "./image-sanitization.js";
@@ -501,6 +502,10 @@ export function createOpenClawReadTool(
         maxBytes: resolveAdaptiveReadMaxBytes(options),
       });
       const filePath = typeof record?.path === "string" ? String(record.path) : "<unknown>";
+      // Add Dected SkILL.md reads:
+      if (filePath.endsWith("/SKILL.md") || filePath == "SKILL.md") {
+        logDebug(`read: loading SKILL.md from ${filePath} (toolCallId=${toolCallId})`);
+      }
       const strippedDetailsResult = stripReadTruncationContentDetails(result);
       const normalizedResult = await normalizeReadImageResult(strippedDetailsResult, filePath);
       return sanitizeToolResultImages(
