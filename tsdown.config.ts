@@ -1,4 +1,5 @@
-import { defineConfig } from "tsdown";
+/// <reference types="node" />
+import { defineConfig, type UserConfig } from "tsdown";
 
 const env = {
   NODE_ENV: "production",
@@ -30,12 +31,13 @@ function buildInputOptions(options: { onLog?: unknown; [key: string]: unknown })
   };
 }
 
-function nodeBuildConfig(config: Record<string, unknown>) {
+function nodeBuildConfig(config: Record<string, unknown>): UserConfig {
   return {
     ...config,
     env,
     fixedExtension: false,
     platform: "node",
+    sourcemap: true,
     inputOptions: buildInputOptions,
   };
 }
