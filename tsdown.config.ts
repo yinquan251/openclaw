@@ -1,11 +1,19 @@
 /// <reference types="node" />
 import { defineConfig, type UserConfig } from "tsdown";
 
+// Extract the InputOptions type from UserConfig["inputOptions"] without importing rolldown directly.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type InputOptionsFn = Extract<NonNullable<UserConfig["inputOptions"]>, (...args: any[]) => any>;
+type InputOptions = Parameters<InputOptionsFn>[0];
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type OnLogFn = Extract<NonNullable<InputOptions["onLog"]>, (...args: any[]) => any>;
+type OnLogParams = Parameters<OnLogFn>;
+
 const env = {
   NODE_ENV: "production",
 };
 
-function buildInputOptions(options: { onLog?: unknown; [key: string]: unknown }) {
+function buildInputOptions(options: InputOptions) {
   if (process.env.OPENCLAW_BUILD_VERBOSE === "1") {
     return undefined;
   }
@@ -14,11 +22,7 @@ function buildInputOptions(options: { onLog?: unknown; [key: string]: unknown })
 
   return {
     ...options,
-    onLog(
-      level: string,
-      log: { code?: string },
-      defaultHandler: (level: string, log: { code?: string }) => void,
-    ) {
+    onLog(level: OnLogParams[0], log: OnLogParams[1], defaultHandler: OnLogParams[2]) {
       if (log.code === "PLUGIN_TIMINGS") {
         return;
       }
